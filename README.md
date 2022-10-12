@@ -33,7 +33,7 @@ poetry run python src/bin/optmize.py --exp test --debug true
 ## Run
 uplift modelingの学習と最適化による割当全てを実行します
 ```
-sh bin/run.sh test
+sh bin/run.sh test false
 ```
 
 ## 可視化
