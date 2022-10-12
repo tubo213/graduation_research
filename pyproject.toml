@@ -33,6 +33,8 @@ mypy = "^0.950"
 isort = "^5.10.1"
 jupyter = "^1.0.0"
 jupyterlab = "^3.4.0"
+nb-black = "^1.0.7"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
