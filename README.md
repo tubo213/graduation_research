@@ -1,12 +1,15 @@
 # Mercari Coupon Allocation
 
 ## Setup
+
+1. 以下コマンドを実行
 ```
 git clone git@github.com:tubo213/graduation_research.git
 cd graduation_research
 poetry shell
 poetry install
 ```
+2. `input/`直下に[データ](https://drive.google.com/file/d/1qaAhXao5zFLmW3KMpHBa2gYXHP9FWTRb/view?usp=sharing)を置く
 
 ## Train
 uplift modelを学習します.
