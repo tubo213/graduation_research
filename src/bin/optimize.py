@@ -30,26 +30,43 @@ if __name__ == "__main__":
     # optimize
     # TODO: configで最適化の方法を指定できるようにする
     n_sample = min(len(test_df), postprocess_config.n_sample)
-    for seed in tqdm(range(postprocess_config.n_seed), desc="seed"):
-        np.random.seed(seed)
-        sample_idx = test_df.sample(n_sample, random_state=seed).index.to_numpy()
-        random_uplift_pred = np.random.rand(*s_uplift_pred.shape)
-        uplift_preds = [
-            s_uplift_pred.to_numpy(),
-            t_uplift_pred.to_numpy(),
-            x_uplift_pred.to_numpy(),
-        ]
-        for budget_constraint in tqdm(
-            np.linspace(int(n_sample * 15 * 0.2), n_sample * 15, 10),
-            desc="budget_constraint",
-            leave=False,
-        ):
-            for name, preds in zip(pred_names, uplift_preds):
-                assginment = container.postprocess_service.postprocess(
-                    preds[sample_idx], budget_constraint
-                )
-                np.save(
-                    config.dir_config.output_optimize_dir
-                    / f"{name}_{budget_constraint}_{seed}.npy",
-                    assginment,
-                )
+
+    # mでアルゴリズムを切り替え
+    for m in ["exact"]:
+    # for m in ["cpa_greedy", "gmv_greedy", "exact"]:
+        for seed in tqdm(range(postprocess_config.n_seed), desc="seed"):
+            np.random.seed(seed)
+            sample_idx = test_df.sample(n_sample, random_state=seed).index.to_numpy()
+            random_uplift_pred = np.random.rand(*t_uplift_pred.shape)
+            uplift_preds = [
+                s_uplift_pred.to_numpy(),
+                t_uplift_pred.to_numpy(),
+                x_uplift_pred.to_numpy(),
+            ]
+            for budget_constraint in tqdm(
+                np.linspace(int(n_sample * 15 * 0.2), n_sample * 15, 10),
+                desc="budget_constraint",
+                leave=False,
+            ):
+                for name, preds in zip(pred_names, uplift_preds):
+                    assginment = container.postprocess_service.postprocess(
+                        preds[sample_idx], budget_constraint, method=m
+                    )
+                    if m == "exact":
+                        np.save(
+                            config.dir_config.output_optimize_dir
+                            / f"{name}_{budget_constraint}_{seed}.npy",
+                            assginment,
+                        )
+                    elif m == "gmv_greedy":
+                        np.save(
+                            config.dir_config.output_optimize_dir
+                            / f"{name}-gmv-greedy_{budget_constraint}_{seed}_.npy",
+                            assginment,
+                        )
+                    elif m == "cpa_greedy":
+                        np.save(
+                            config.dir_config.output_optimize_dir
+                            / f"{name}-cpa-greedy_{budget_constraint}_{seed}.npy",
+                            assginment,
+                        )
