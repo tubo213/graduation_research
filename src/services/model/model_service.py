@@ -10,7 +10,7 @@ from sklearn.neural_network import MLPClassifier, MLPRegressor
 from sklearn.svm import SVC, SVR
 import xgboost as xgb
 from src.services.base.base_service import BaseService
-from src.services.model.models import AbstractLearner, SLearner, TLearner, XLearner
+from src.services.model.models import AbstractLearner, SLearner, TLearner, XLearner, TransformedOutcomeLearner, CostConsiousTOLearner
 from src.typing import CONFIGTYPE
 
 
@@ -35,11 +35,20 @@ class ModelService(BaseService):
                 propensity_model=propensity_model,
                 **self.model_config.metalearner["params"],
             )
+        elif self.model_config.metalearner["name"] == "transformedoutcome":
+            return TransformedOutcomeLearner(
+                basemodel, **self.model_config.metalearner["params"]
+            )
+        elif self.model_config.metalearner["name"] == "costconsious":
+            clf_model = self._get_clf_basemodel()
+            return CostConsiousTOLearner(
+                basemodel, clf_model, **self.model_config.metalearner["params"]
+            )
         else:
             raise ValueError(
                 f"""
                 invalid metalearner name: {self.model_config.metalearner['name']},
-                metalearner name must be 's-learner' or 't-learner' or 'x-learner'
+                metalearner name must be 's-learner' or 't-learner' or 'x-learner' or 'transformedoutcome' or 'costconsious'
                 """
             )
 
