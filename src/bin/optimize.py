@@ -20,8 +20,7 @@ if __name__ == "__main__":
 
     train_df, test_df = container.preprocess_service.split()
 
-    # load uplift predictions
-    # TODO: 最適化用のデータ読み込みクラス作る
+    # load uplift prediction
     uplift_pred = pd.read_csv(
         config.train_config.base_config.dir_config.output_prediction_dir / "uplift_pred.csv"
     ).to_numpy()
