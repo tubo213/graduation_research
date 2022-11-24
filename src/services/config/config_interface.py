@@ -67,6 +67,7 @@ class PreprocessConfig:
 @dataclass
 class PostprocessConfig:
     name: str
+    params: dict
     n_sample: int = 10000
     n_seed: int = 10
     variant_no_to_cost: Dict[int, int] = field(default_factory=dict)

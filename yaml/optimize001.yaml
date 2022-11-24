@@ -15,7 +15,9 @@ coupon_config:
 train_name: train001
 
 postprocess_config:
-  name: 'discrete'
+  name: 'greedy'
+  params:
+    method: 'cpa_greedy'
   n_sample: 10000
   n_seed: 5
   variant_no_to_cost:
