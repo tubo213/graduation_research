@@ -3,29 +3,30 @@ seed: 77
 problem_type: classification
 target_name: gmv_28day
 treatment_name: treatment
+coupon_config:
+  variant_no_to_coupon_type:
+    0: "control"
+    1: "5% back"
+    2: "5% off"
+    3: "300yen off"
+    4: "10% off"
+    5: "10% back"
+    6: "15% off"
 
 preprocess_config:
   test_size: 0.2
 
-postprocess_config:
-  n_sample: 10000
-  n_seed: 10
-  variant_no_to_coupon_type:
-    0: 'control'
-    1: '5% back'
-    2: '5% off'
-    3: '300yen off'
-    4: '10% off'
-    5: '10% back'
-    6: '15% off'
-  variant_no_to_cost:
-    0: 0
-    1: 5
-    2: 5
-    3: 13
-    4: 10
-    5: 10
-    6: 15
+model_config:
+  metalearner:
+    name: 's-learner'
+    params:
+      control_no: 0
+  basemodel:
+    name: 'lgbm'
+    params:
+      n_estimators: 500
+
+
 feature_config:
   feature_names:
     - 'adjust_rectangle_recency'

@@ -22,34 +22,27 @@ if __name__ == "__main__":
 
     # load uplift predictions
     # TODO: 最適化用のデータ読み込みクラス作る
-    s_uplift_pred = pd.read_csv(config.dir_config.output_prediction_dir / "s_uplift_pred.csv")
-    t_uplift_pred = pd.read_csv(config.dir_config.output_prediction_dir / "t_uplift_pred.csv")
-    x_uplift_pred = pd.read_csv(config.dir_config.output_prediction_dir / "x_uplift_pred.csv")
-    pred_names = ["s-learner", "t-learner", "x-learner"]
+    uplift_pred = pd.read_csv(
+        config.train_config.base_config.dir_config.output_prediction_dir / "uplift_pred.csv"
+    ).to_numpy()
 
     # optimize
-    # TODO: configで最適化の方法を指定できるようにする
+    optimizer = container.postprocess_service.get_postprocess()
     n_sample = min(len(test_df), postprocess_config.n_sample)
     for seed in tqdm(range(postprocess_config.n_seed), desc="seed"):
         np.random.seed(seed)
         sample_idx = test_df.sample(n_sample, random_state=seed).index.to_numpy()
-        random_uplift_pred = np.random.rand(*s_uplift_pred.shape)
-        uplift_preds = [
-            s_uplift_pred.to_numpy(),
-            t_uplift_pred.to_numpy(),
-            x_uplift_pred.to_numpy(),
-        ]
+        random_uplift_pred = np.random.rand(*uplift_pred.shape)
         for budget_constraint in tqdm(
             np.linspace(int(n_sample * 15 * 0.2), n_sample * 15, 10),
             desc="budget_constraint",
             leave=False,
         ):
-            for name, preds in zip(pred_names, uplift_preds):
-                assginment = container.postprocess_service.postprocess(
-                    preds[sample_idx], budget_constraint
-                )
-                np.save(
-                    config.dir_config.output_optimize_dir
-                    / f"{name}_{budget_constraint}_{seed}.npy",
-                    assginment,
-                )
+            assginment = optimizer.postprocess(
+                uplift_pred[sample_idx], budget_constraint
+            )
+            np.save(
+                config.base_config.dir_config.output_optimize_dir
+                / f"{budget_constraint}_{seed}.npy",
+                assginment,
+            )

@@ -14,12 +14,12 @@ class OptimizeRunnerContainer(BaseService):
         self.config = self.config_service.get_config()
 
     def initialize(self):
-        GlobalUtil.seed_everything(self.config.seed)
-        self.data_service = DataService(self.config_service)
+        GlobalUtil.seed_everything(self.config.base_config.seed)
+        self.data_service = DataService(self.config)
         self.preprocess_service = PreprocessService(
-            self.config_service, self.data_service
+            self.config.train_config, self.data_service
         )
         self.preprocess_service.preprocess()
         self.postprocess_service = PostprocessService(
-            self.config_service, self.data_service
+            self.config, self.data_service
         )

@@ -50,6 +50,11 @@ class DirConfig:
 
 
 @dataclass
+class CouponConfig:
+    variant_no_to_coupon_type: Dict[int, str] = field(default_factory=dict)
+
+
+@dataclass
 class FeatureConfig:
     feature_names: List[str]
 
@@ -61,14 +66,20 @@ class PreprocessConfig:
 
 @dataclass
 class PostprocessConfig:
+    name: str
     n_sample: int = 10000
     n_seed: int = 10
-    variant_no_to_coupon_type: Dict[int, str] = field(default_factory=dict)
     variant_no_to_cost: Dict[int, int] = field(default_factory=dict)
 
 
 @dataclass
-class Config:
+class ModelConfig:
+    metalearner: dict
+    basemodel: dict
+
+
+@dataclass
+class BaseConfig:
     raw_dict: Dict
     name: str
     exp: str
@@ -79,6 +90,19 @@ class Config:
     seed: int
     env: str
     dir_config: DirConfig
+    counpon_config: CouponConfig
+
+
+@dataclass
+class TrainConfig:
+    base_config: BaseConfig
     preprocess_config: PreprocessConfig
-    postprocess_config: PostprocessConfig
     feature_config: FeatureConfig
+    model_config: ModelConfig
+
+
+@dataclass
+class OptimizeConfig:
+    base_config: BaseConfig
+    train_config: TrainConfig
+    postprocess_config: PostprocessConfig

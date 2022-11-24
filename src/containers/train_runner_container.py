@@ -3,6 +3,7 @@ from src.services.base.base_service import BaseService
 from src.services.config.config_service import ConfigService
 from src.services.data.data_service import DataService
 from src.services.preprocess.preprocess_service import PreprocessService
+from src.services.model.model_service import ModelService
 
 
 class TrainRunnerContainer(BaseService):
@@ -13,7 +14,8 @@ class TrainRunnerContainer(BaseService):
         self.config = self.config_service.get_config()
 
     def initialize(self):
-        GlobalUtil.seed_everything(self.config.seed)
-        self.data_service = DataService(self.config_service)
-        self.preprocess_service = PreprocessService(self.config_service, self.data_service)
+        GlobalUtil.seed_everything(self.config.base_config.seed)
+        self.data_service = DataService(self.config)
+        self.preprocess_service = PreprocessService(self.config, self.data_service)
         self.preprocess_service.preprocess()
+        self.model_service = ModelService(self.config)

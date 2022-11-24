@@ -131,3 +131,4 @@ dmypy.json
 input/*csv
 output/*/*
 .DS_Store
+local/*
