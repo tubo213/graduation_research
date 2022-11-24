@@ -39,10 +39,10 @@ if __name__ == "__main__":
             leave=False,
         ):
             assginment = optimizer.postprocess(
-                uplift_pred[sample_idx], budget_constraint
+                uplift_pred[sample_idx], budget_constraint, seed
             )
             np.save(
                 config.base_config.dir_config.output_optimize_dir
-                / f"{budget_constraint}_{seed}.npy",
+                / f"assignenment_{budget_constraint}_{seed}.npy",
                 assginment,
             )

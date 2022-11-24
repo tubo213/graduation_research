@@ -6,7 +6,7 @@ class GreedyPostprocess:
         self.postprocess_config = postprocess_config
         self.method = postprocess_config.params["method"]
 
-    def postprocess(self, uplift_mat, budget_constraint):
+    def postprocess(self, uplift_mat, budget_constraint, seed: int):
         customer_list = list(range(uplift_mat.shape[0]))
         coupon_list = list(range(uplift_mat.shape[1]))
         # uplift/cost の降順にソート

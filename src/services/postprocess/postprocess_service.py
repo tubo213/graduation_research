@@ -33,9 +33,11 @@ class PostprocessService(BaseService):
         if self.postprocess_config.name == "discrete":
             return DiscretePostprocess(self.postprocess_config)
         elif self.postprocess_config.name == "cluster":
-            return ClusterPostprocess(self.postprocess_config)
+            return ClusterPostprocess(self.config.base_config, self.postprocess_config)
         elif self.postprocess_config.name == "cluster_with_uncertainty":
-            return ClusterWithUncertaintyPostprocess(self.postprocess_config)
+            return ClusterWithUncertaintyPostprocess(
+                self.config.base_config, self.postprocess_config
+            )
         elif self.postprocess_config.name == "greedy":
             return GreedyPostprocess(self.postprocess_config)
         else:

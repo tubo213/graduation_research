@@ -8,7 +8,7 @@ class DiscretePostprocess:
     def __init__(self, postprocess_config):
         self.postprocess_config = postprocess_config
 
-    def postprocess(self, uplift_mat, budget_constraint, timelimit=100):
+    def postprocess(self, uplift_mat, budget_constraint, seed):
         customer_list = list(range(uplift_mat.shape[0]))
         coupon_list = list(range(uplift_mat.shape[1]))
         customer_coupon_list = [
@@ -48,9 +48,7 @@ class DiscretePostprocess:
 
         # 求解
         _ = problem.solve(
-            pulp.PULP_CBC_CMD(
-                msg=False, threads=multiprocessing.cpu_count(), timeLimit=timelimit
-            )
+            pulp.PULP_CBC_CMD(msg=False, threads=multiprocessing.cpu_count())
         )
 
         assginment = [

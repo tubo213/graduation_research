@@ -1,17 +1,30 @@
-import multiprocessing
 from dataclasses import dataclass
-from typing import Any
+from typing import Union
 
-import lightgbm as lgb
 import catboost as cat
+import lightgbm as lgb
+import xgboost as xgb
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet
+from sklearn.linear_model import ElasticNet, Lasso, LinearRegression, Ridge
 from sklearn.neural_network import MLPClassifier, MLPRegressor
 from sklearn.svm import SVC, SVR
-import xgboost as xgb
 from src.services.base.base_service import BaseService
-from src.services.model.models import AbstractLearner, SLearner, TLearner, XLearner, TransformedOutcomeLearner, CostConsiousTOLearner
+from src.services.model.models import (
+    CostConsiousTOLearner,
+    SLearner,
+    TLearner,
+    TransformedOutcomeLearner,
+    XLearner,
+)
 from src.typing import CONFIGTYPE
+
+MODELTYPE = Union[
+    SLearner,
+    TLearner,
+    XLearner,
+    TransformedOutcomeLearner,
+    CostConsiousTOLearner,
+]
 
 
 @dataclass
@@ -21,7 +34,7 @@ class ModelService(BaseService):
         self.config = config
         self.model_config = self.config.model_config
 
-    def get_model(self) -> AbstractLearner:
+    def get_model(self) -> MODELTYPE:
         basemodel = self._get_basemodel(self.config.base_config.problem_type)
 
         if self.model_config.metalearner["name"] == "s-learner":
@@ -66,25 +79,25 @@ class ModelService(BaseService):
             )
 
     def _get_reg_basemodel(self):
-        if self.model_config.basemodel['name'] == "lgbm":
-            return lgb.LGBMRegressor(**self.model_config.basemodel['params'])
-        elif self.model_config.basemodel['name'] == "xgb":
+        if self.model_config.basemodel["name"] == "lgbm":
+            return lgb.LGBMRegressor(**self.model_config.basemodel["params"])
+        elif self.model_config.basemodel["name"] == "xgb":
             return xgb.XGBRegressor(**self.model_config.basemodel["params"])
-        elif self.model_config.basemodel['name'] == "catboost":
+        elif self.model_config.basemodel["name"] == "catboost":
             return cat.CatBoostRegressor(**self.model_config.basemodel["params"])
-        elif self.model_config.basemodel['name'] == "rf":
+        elif self.model_config.basemodel["name"] == "rf":
             return RandomForestRegressor(**self.model_config.basemodel["params"])
-        elif self.model_config.basemodel['name'] == "mlp":
+        elif self.model_config.basemodel["name"] == "mlp":
             return MLPRegressor(**self.model_config.basemodel["params"])
-        elif self.model_config.basemodel['name'] == "linear":
+        elif self.model_config.basemodel["name"] == "linear":
             return LinearRegression(**self.model_config.basemodel["params"])
-        elif self.model_config.basemodel['name'] == "ridge":
+        elif self.model_config.basemodel["name"] == "ridge":
             return Ridge(**self.model_config.basemodel["params"])
-        elif self.model_config.basemodel['name'] == "lasso":
+        elif self.model_config.basemodel["name"] == "lasso":
             return Lasso(**self.model_config.basemodel["params"])
-        elif self.model_config.basemodel['name'] == "elasticnet":
+        elif self.model_config.basemodel["name"] == "elasticnet":
             return ElasticNet(**self.model_config.basemodel["params"])
-        elif self.model_config.basemodel['name'] == "svr":
+        elif self.model_config.basemodel["name"] == "svr":
             return SVR(**self.model_config.basemodel["params"])
         else:
             raise ValueError(
@@ -95,17 +108,17 @@ class ModelService(BaseService):
             )
 
     def _get_clf_basemodel(self):
-        if self.model_config.basemodel['name'] == "lgbm":
+        if self.model_config.basemodel["name"] == "lgbm":
             return lgb.LGBMClassifier(**self.model_config.basemodel["params"])
-        elif self.model_config.basemodel['name'] == "xgb":
+        elif self.model_config.basemodel["name"] == "xgb":
             return xgb.XGBClassifier(**self.model_config.basemodel["params"])
-        elif self.model_config.basemodel['name'] == "catboost":
+        elif self.model_config.basemodel["name"] == "catboost":
             return cat.CatBoostClassifier(**self.model_config.basemodel["params"])
-        elif self.model_config.basemodel['name'] == "rf":
+        elif self.model_config.basemodel["name"] == "rf":
             return RandomForestClassifier(**self.model_config.basemodel["params"])
-        elif self.model_config.basemodel['name'] == "mlp":
+        elif self.model_config.basemodel["name"] == "mlp":
             return MLPClassifier(**self.model_config.basemodel["params"])
-        elif self.model_config.basemodel['name'] == "svm":
+        elif self.model_config.basemodel["name"] == "svm":
             return SVC(**self.model_config.basemodel["params"])
         else:
             raise ValueError(
