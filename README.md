@@ -13,30 +13,35 @@ poetry install
 
 ## Train
 uplift modelを学習します.
-学習の設定は`yaml/hoge.yaml`で指定します
+学習の設定は`yaml/train*.yaml`で指定します
+学習のyamlファイル名は`train`から始める必要があります
+
 ```
-poetry run python src/bin/train.py --exp test
+poetry run python src/bin/train.py --exp train001
 ```
 `--debug`オプションをつけると小さいデータで実行します
 ```
-poetry run python src/bin/train.py --exp test --debug true
+poetry run python src/bin/train.py --exp train001 --debug true
 ```
 
 ## Optimize
 uplift modelの予測値を用いて最適化を実行します
+最適化の設定は`yaml/optimize*.yaml`で指定します
+最適化のyamlファイル名は`optimize`から始める必要があります
 ```
-poetry run python src/bin/train.py --exp test
+poetry run python src/bin/optimize.py --exp optimize001
 ```
 こちらも`--debug`オプションをつけると小さいデータで実行します.
 trainをdebugで実行した場合にはoptimizeでも付ける必要があります
 ```
-poetry run python src/bin/optmize.py --exp test --debug true
+poetry run python src/bin/optmize.py --exp optimize001 --debug true
 ```
 
 ## Run
 uplift modelingの学習と最適化による割当全てを実行します
+
 ```
-sh bin/run.sh test false
+sh bin/run.sh train001 optimize001 false
 ```
 
 ## 可視化
