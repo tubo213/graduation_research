@@ -15,11 +15,12 @@ coupon_config:
 train_name: train001
 
 postprocess_config:
-  name: 'greedy'
+  name: 'cluster'
   params:
-    method: 'cpa_greedy'
-  n_sample: 10000
-  n_seed: 5
+    clustering: 'gmm'
+    n_cluster: 10
+  n_sample: 9999999
+  n_seed: 1
   variant_no_to_cost:
     0: 0
     1: 5
