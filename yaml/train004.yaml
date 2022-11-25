@@ -18,7 +18,7 @@ preprocess_config:
 
 model_config:
   metalearner:
-    name: 's-learner' # s-learner, t-learner, x-learner, transformedoutcome, costconsious
+    name: 'transformedoutcome' # s-learner, t-learner, x-learner, transformedoutcome, costconsious
     params:
       control_no: 0
   basemodel:

@@ -1,4 +1,4 @@
-name: "s-learner, robust"
+name: "transformedoutcome, robust"
 seed: 77
 problem_type: regression
 target_name: gmv_28day
@@ -12,7 +12,7 @@ coupon_config:
     4: "10% off"
     5: "10% back"
     6: "15% off"
-train_name: train001
+train_name: train004
 
 postprocess_config:
   name: 'robust'

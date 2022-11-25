@@ -81,6 +81,6 @@ if __name__ == "__main__":
         auuc = calc_auuc(target_i, treatment_i, preds_i)
         train_runner_container.logger.info(f"{coupon_type} AUUC: {auuc}")
         save_path = str(
-            config.base_config.dir_config.output_figure_dir / "uplift_curve.png"
+            config.base_config.dir_config.output_figure_dir / f"uplift_curve_{coupon_type}.png"
         )
         fig.savefig(save_path)

@@ -42,6 +42,6 @@ if __name__ == "__main__":
             )
             np.save(
                 config.base_config.dir_config.output_optimize_dir
-                / f"assignenment_{budget_constraint}_{seed}.npy",
+                / f"assignment_{budget_constraint}_{seed}.npy",
                 assginment,
             )
