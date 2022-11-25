@@ -9,6 +9,7 @@ from src.services.postprocess.cluster_with_uncertainty_postprocess import (
 )
 from src.services.postprocess.discrete_postprocess import DiscretePostprocess
 from src.services.postprocess.greedy_postprocess import GreedyPostprocess
+from src.services.postprocess.robust_postprocess import RobustPostprocess
 from src.typing import CONFIGTYPE
 
 POSTPROCESSTYPE = Union[
@@ -16,6 +17,7 @@ POSTPROCESSTYPE = Union[
     ClusterWithUncertaintyPostprocess,
     DiscretePostprocess,
     GreedyPostprocess,
+    RobustPostprocess,
 ]
 
 
@@ -40,10 +42,13 @@ class PostprocessService(BaseService):
             )
         elif self.postprocess_config.name == "greedy":
             return GreedyPostprocess(self.postprocess_config)
+        elif self.postprocess_config.name == "robust":
+            return RobustPostprocess(self.config.base_config, self.postprocess_config)
         else:
             raise ValueError(
                 f"""
                 invalid postprocess name: {self.postprocess_config.name},
-                postprocess name must be 'discrete' or 'cluster' or 'cluster_with_uncertainty' or 'greedy'
+                postprocess name must be
+                'discrete' or 'cluster' or 'cluster_with_uncertainty' or 'greedy' or 'robust'
                 """
             )

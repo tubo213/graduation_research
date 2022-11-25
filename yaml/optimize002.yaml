@@ -1,4 +1,4 @@
-name: "s-learner, robust"
+name: "s-learner, cluster"
 seed: 77
 problem_type: regression
 target_name: gmv_28day
@@ -15,7 +15,7 @@ coupon_config:
 train_name: train001
 
 postprocess_config:
-  name: 'robust'
+  name: 'cluster'
   params:
     clustering: 'gmm'
     n_cluster: 10
