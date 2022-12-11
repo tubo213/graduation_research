@@ -42,6 +42,7 @@ class RobustPostprocess(BaseService):
         sigma = np.stack(
             [np.sqrt(np.diag(_cov)) for _cov in clustering_model.covariances_]
         ).flatten()
+        sigma = self.postprocess_config.params['alpha'] * sigma
         costs = np.tile(self.cost, self.n_cluster).flatten()
 
         # optimize
