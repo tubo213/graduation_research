@@ -1,4 +1,4 @@
-# Mercari Coupon Allocation
+# Coupon Allocation
 
 ## Setup
 
