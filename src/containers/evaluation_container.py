@@ -84,9 +84,16 @@ class EvaluationContainer(BaseService):
         clusters = []
         for path in cluster_paths:
             assignment = FileUtil.load_npy(path, logger=self.logger)
-            _, seed, budget_constraint = path.stem.split("_")
+            if len(path.stem.split("_")) == 3:
+                _, seed, budget = path.stem.split("_")
+            elif len(path.stem.split("_")) == 2:
+                _, seed = path.stem.split("_")
+                budget = 0
+            else:
+                raise ValueError("invalid cluster path")
+
             seed = int(seed)
-            budget_constraint = float(budget_constraint)
-            clusters.append([seed, budget_constraint, assignment])
+            budget = float(budget)
+            clusters.append([seed, budget, assignment])
 
         return clusters
