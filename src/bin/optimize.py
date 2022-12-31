@@ -33,10 +33,11 @@ if __name__ == "__main__":
         sample_idx = test_df.sample(n_sample, random_state=seed).index.to_numpy()
         random_uplift_pred = np.random.rand(*uplift_pred.shape)
         for budget_constraint in tqdm(
-            np.linspace(int(n_sample * 15 * 0.2), n_sample * 15, 10),
+            np.linspace(400000, 400000 * 4, 11),
             desc="budget_constraint",
             leave=False,
         ):
+            print(f"budget_constraint: {budget_constraint}")
             assginment = optimizer.postprocess(
                 uplift_pred[sample_idx], budget_constraint, seed
             )

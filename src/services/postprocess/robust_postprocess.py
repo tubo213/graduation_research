@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
 from src.services.base.base_service import BaseService
-from src.utils import save_as_pickle
+from src.utils import load_from_pickle, save_as_pickle
 
 
 class RobustPostprocess(BaseService):
@@ -20,21 +20,7 @@ class RobustPostprocess(BaseService):
     def postprocess(self, uplift_mat, budget_constraint: float, seed: int):
         # clustering
         self.n_treatment = uplift_mat.shape[1]
-        clustering_model = self.get_clustering()
-        clustering_model.fit(uplift_mat)
-        save_clustering_model_path = (
-            self.base_config.dir_config.output_model_dir
-            / f"clustering_model_{seed}_{budget_constraint}.pkl"
-        )
-        save_as_pickle(clustering_model, save_clustering_model_path)
-
-        # # get cluster labels
-        labels = clustering_model.predict(uplift_mat)
-        np.save(
-            self.base_config.dir_config.output_optimize_dir
-            / f"cluster_{seed}_{budget_constraint}.npy",
-            labels,
-        )
+        labels, clustering_model = self.run_clustering(uplift_mat, seed)
 
         uplift_df = pd.DataFrame(uplift_mat)
         cluster_uplift = uplift_df.groupby(labels).mean().values.flatten()
@@ -42,6 +28,7 @@ class RobustPostprocess(BaseService):
         sigma = np.stack(
             [np.sqrt(np.diag(_cov)) for _cov in clustering_model.covariances_]
         ).flatten()
+        sigma = self.postprocess_config.params['alpha'] * sigma
         costs = np.tile(self.cost, self.n_cluster).flatten()
 
         # optimize
@@ -75,6 +62,21 @@ class RobustPostprocess(BaseService):
                 n_components=self.n_cluster,
                 random_state=self.base_config.seed,
             )
+
+    def run_clustering(self, uplift_mat, seed: int):
+        model_path = self.base_config.dir_config.output_model_dir / f"clustering_model_{seed}.pkl"
+        label_path = self.base_config.dir_config.output_optimize_dir / f"cluster_{seed}.npy"
+        if model_path.exists():
+            clustering_model = load_from_pickle(model_path)
+            labels = np.load(label_path)
+        else:
+            clustering_model = self.get_clustering()
+            clustering_model.fit(uplift_mat)
+            save_as_pickle(clustering_model, model_path)
+            labels = clustering_model.predict(uplift_mat)
+            np.save(label_path, labels)
+
+        return labels, clustering_model
 
     def optimize(self, cluster_uplift, cluster_size, sigma, costs, budget_constraint):
         x = cp.Variable(shape=cluster_uplift.size, nonneg=True)

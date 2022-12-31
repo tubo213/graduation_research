@@ -1,0 +1,32 @@
+coupon_config:
+  variant_no_to_coupon_type:
+    0: control
+    1: 5% back
+    2: 5% off
+    3: 300yen off
+    4: 10% off
+    5: 10% back
+    6: 15% off
+name: s-learner, robust, alpha=0, cluster=10, gamma=0
+postprocess_config:
+  n_sample: 9999999
+  n_seed: 1
+  name: robust
+  params:
+    alpha: 0
+    clustering: gmm
+    gamma: 0
+    n_cluster: 10
+  variant_no_to_cost:
+    0: 0
+    1: 5
+    2: 5
+    3: 13
+    4: 10
+    5: 10
+    6: 15
+problem_type: regression
+seed: 77
+target_name: gmv_28day
+train_name: train001
+treatment_name: treatment
